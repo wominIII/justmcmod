@@ -28,6 +28,10 @@ public class TargetManager {
 
     /** 目标 UUID → 当前任务 */
     private static final Map<UUID, TaskData> tasks = new ConcurrentHashMap<>();
+    /** 目标 UUID → 外骨骼黑暗效果是否启用（默认 false） */
+    private static final Map<UUID, Boolean> exoDarknessEnabled = new ConcurrentHashMap<>();
+    /** 目标 UUID → 眼镜黑白视觉是否启用（默认 false） */
+    private static final Map<UUID, Boolean> gogglesVisionEnabled = new ConcurrentHashMap<>();
 
     /* ═══════════ 绑定 ═══════════ */
 
@@ -66,6 +70,35 @@ public class TargetManager {
         tasks.remove(target);
     }
 
+    public static boolean isExoDarknessEnabled(UUID target) {
+        return exoDarknessEnabled.getOrDefault(target, false);
+    }
+
+    public static void setExoDarknessEnabled(UUID target, boolean enabled) {
+        if (enabled) {
+            exoDarknessEnabled.put(target, true);
+        } else {
+            exoDarknessEnabled.remove(target);
+        }
+    }
+
+    public static boolean isGogglesVisionEnabled(UUID target) {
+        return gogglesVisionEnabled.getOrDefault(target, false);
+    }
+
+    public static void setGogglesVisionEnabled(UUID target, boolean enabled) {
+        if (enabled) {
+            gogglesVisionEnabled.put(target, true);
+        } else {
+            gogglesVisionEnabled.remove(target);
+        }
+    }
+
+    public static void clearEffectControls(UUID target) {
+        exoDarknessEnabled.remove(target);
+        gogglesVisionEnabled.remove(target);
+    }
+
     /* ═══════════ 查询可用目标列表 ═══════════ */
 
     /**
@@ -77,15 +110,13 @@ public class TargetManager {
         if (server == null) return result;
 
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            if (player.getUUID().equals(master)) continue; // 排除自己
-
-            if (isOwnedByMaster(player, master)) {
-                result.add(player.getUUID());
+            UUID uuid = player.getUUID();
+            if (uuid.equals(master) || isOwnedByMaster(player, master)) {
+                result.add(uuid);
             }
         }
         return result;
     }
-
     /**
      * 检查一个玩家是否佩戴了属于 master 的 TechCollar。
      */
@@ -114,13 +145,13 @@ public class TargetManager {
      * 验证 master 是否有权操控 target。
      */
     public static boolean canControl(UUID master, UUID target) {
+        if (master.equals(target)) return true;
         var server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return false;
         ServerPlayer targetPlayer = server.getPlayerList().getPlayer(target);
         if (targetPlayer == null) return false;
         return isOwnedByMaster(targetPlayer, master);
     }
-
     /**
      * 反查：某个目标的主人是谁。
      */
@@ -181,6 +212,7 @@ public class TargetManager {
 
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        // 玩家下线时不清除绑定和任务——这样上线后可以恢复
+        // Keep bindings/tasks, but reset runtime visual toggles on logout.
+        clearEffectControls(event.getEntity().getUUID());
     }
 }

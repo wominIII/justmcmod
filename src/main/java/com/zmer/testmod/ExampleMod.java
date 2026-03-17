@@ -21,8 +21,6 @@ import com.zmer.testmod.item.TechCollar;
 import com.zmer.testmod.item.ExoskeletonItem;
 import com.zmer.testmod.item.KeycardItem;
 import com.zmer.testmod.item.MechanicalGlovesItem;
-import com.zmer.testmod.item.MiningCardItem;
-import com.zmer.testmod.item.RemoteControlItem;
 import com.zmer.testmod.item.AiBeltItem;
 import com.zmer.testmod.item.ElectronicShacklesItem;
 import com.zmer.testmod.item.AnkleShacklesItem;
@@ -99,14 +97,6 @@ public class ExampleMod
     public static final RegistryObject<Item> MECHANICAL_GLOVES = ITEMS.register("mechanical_gloves",
             () -> new MechanicalGlovesItem(new Item.Properties().stacksTo(1)));
 
-    // Mining Card — inserted into gloves to activate mining-slave mode
-    public static final RegistryObject<Item> MINING_CARD = ITEMS.register("mining_card",
-            () -> new MiningCardItem(new Item.Properties().stacksTo(1)));
-
-    // Remote Control — master uses to recall mining slave
-    public static final RegistryObject<Item> REMOTE_CONTROL = ITEMS.register("remote_control",
-            () -> new RemoteControlItem(new Item.Properties().stacksTo(1)));
-
     // Tab Icon Item — creative tab icon (not obtainable in game)
     public static final RegistryObject<Item> TAB_ICON = ITEMS.register("tab_icon",
             () -> new Item(new Item.Properties()));
@@ -168,8 +158,6 @@ public class ExampleMod
                 output.accept(CHARGING_STATION_ITEM.get());
                 output.accept(KEYCARD.get());
                 output.accept(MECHANICAL_GLOVES.get());
-                output.accept(MINING_CARD.get());
-                output.accept(REMOTE_CONTROL.get());
                 output.accept(TECH_BARRIER_ITEM.get());
                 output.accept(AI_BELT.get());
                 output.accept(ELECTRONIC_SHACKLES.get());

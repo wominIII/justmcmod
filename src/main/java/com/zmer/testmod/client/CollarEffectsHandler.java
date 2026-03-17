@@ -22,7 +22,7 @@ import top.theillusivec4.curios.api.CuriosApi;
  * - Hides the vanilla crosshair
  * - Replaces the vanilla hotbar with a high-tech version
  * - Replaces vanilla health / food bars with tech-styled ones
- * - Hides first-person arms entirely
+ * - Keeps first-person arms visible
  */
 @Mod.EventBusSubscriber(modid = ExampleMod.MODID, value = Dist.CLIENT)
 public class CollarEffectsHandler {
@@ -72,14 +72,13 @@ public class CollarEffectsHandler {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // EVENT: Hide first-person arms completely
+    // EVENT: Keep first-person arms visible
     // ═══════════════════════════════════════════════════════════
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onRenderHand(RenderHandEvent event) {
-        if (isCollarEquipped()) {
-            event.setCanceled(true);
-        }
+        // Intentionally not canceling hand rendering:
+        // users want to keep first-person arms visible while wearing the suit/collar.
     }
 
     // ═══════════════════════════════════════════════════════════

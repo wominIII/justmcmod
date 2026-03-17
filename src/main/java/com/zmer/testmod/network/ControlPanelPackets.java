@@ -367,6 +367,9 @@ public class ControlPanelPackets {
                             TechCollar.unlockRemoval();
                             TechCollar.setMovementRestricted(stack, false);
                             TechCollar.setInteractionRestricted(stack, false);
+                            TargetManager.setExoDarknessEnabled(targetUUID, false);
+                            TargetManager.setGogglesVisionEnabled(targetUUID, false);
+                            sendVisionStateToTarget(target);
                             target.displayClientMessage(Component.literal("\u00A7a\u9879\u5708\u5DF2\u8FDC\u7A0B\u91CA\u653E"), false);
                         }
                         case RESTRICT_MOVEMENT -> {
@@ -465,6 +468,93 @@ public class ControlPanelPackets {
         }
     }
 
+    public static class C2SEffectControl {
+        public static final int ENABLE_EXO_DARKNESS = 0;
+        public static final int DISABLE_EXO_DARKNESS = 1;
+        public static final int ENABLE_GOGGLES_VISION = 2;
+        public static final int DISABLE_GOGGLES_VISION = 3;
+
+        private final UUID targetUUID;
+        private final int action;
+
+        public C2SEffectControl(UUID targetUUID, int action) {
+            this.targetUUID = targetUUID;
+            this.action = action;
+        }
+
+        public C2SEffectControl(FriendlyByteBuf buf) {
+            this.targetUUID = buf.readUUID();
+            this.action = buf.readVarInt();
+        }
+
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeUUID(targetUUID);
+            buf.writeVarInt(action);
+        }
+
+        public void handle(Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                ServerPlayer sender = ctx.get().getSender();
+                if (sender == null) return;
+                if (!TargetManager.canControl(sender.getUUID(), targetUUID)) return;
+
+                var server = ServerLifecycleHooks.getCurrentServer();
+                if (server == null) return;
+                ServerPlayer target = server.getPlayerList().getPlayer(targetUUID);
+                if (target == null) return;
+
+                switch (action) {
+                    case ENABLE_EXO_DARKNESS -> {
+                        TargetManager.setExoDarknessEnabled(targetUUID, true);
+                        target.displayClientMessage(Component.literal("§5外骨骼黑暗效果已启用"), true);
+                    }
+                    case DISABLE_EXO_DARKNESS -> {
+                        TargetManager.setExoDarknessEnabled(targetUUID, false);
+                        target.displayClientMessage(Component.literal("§a外骨骼黑暗效果已关闭"), true);
+                    }
+                    case ENABLE_GOGGLES_VISION -> {
+                        TargetManager.setGogglesVisionEnabled(targetUUID, true);
+                        target.displayClientMessage(Component.literal("§5眼镜黑白视觉已启用"), true);
+                    }
+                    case DISABLE_GOGGLES_VISION -> {
+                        TargetManager.setGogglesVisionEnabled(targetUUID, false);
+                        target.displayClientMessage(Component.literal("§a眼镜黑白视觉已关闭"), true);
+                    }
+                    default -> {
+                        return;
+                    }
+                }
+
+                sendVisionStateToTarget(target);
+                sender.displayClientMessage(Component.literal("§a视觉效果开关已更新"), true);
+                sendStatusToMaster(sender, targetUUID);
+            });
+            ctx.get().setPacketHandled(true);
+        }
+    }
+
+    public static class S2CVisionControl {
+        private final boolean gogglesVisionEnabled;
+
+        public S2CVisionControl(boolean gogglesVisionEnabled) {
+            this.gogglesVisionEnabled = gogglesVisionEnabled;
+        }
+
+        public S2CVisionControl(FriendlyByteBuf buf) {
+            this.gogglesVisionEnabled = buf.readBoolean();
+        }
+
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeBoolean(gogglesVisionEnabled);
+        }
+
+        public void handle(Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() ->
+                    com.zmer.testmod.client.SoundDarknessRenderer.setPanelVisionEnabled(gogglesVisionEnabled));
+            ctx.get().setPacketHandled(true);
+        }
+    }
+
     public static class C2SRequestStatus {
         private final UUID targetUUID;
 
@@ -502,16 +592,19 @@ public class ControlPanelPackets {
         private final boolean hasAnklets;
         private final boolean ankletsLocked;
         private final boolean brainwashed;
+        private final boolean exoDarknessEnabled;
+        private final boolean gogglesVisionEnabled;
         private final String currentTask;
 
         public S2CTargetStatus(UUID targetUUID, String targetName,
                                int posX, int posY, int posZ, String dimension,
                                float health, int hunger,
                                boolean hasCollar, boolean collarMovement, boolean collarInteraction,
-                               boolean hasHandcuffs, boolean handcuffsLocked,
-                               boolean hasAnklets, boolean ankletsLocked,
-                               boolean brainwashed,
-                               String currentTask) {
+                                boolean hasHandcuffs, boolean handcuffsLocked,
+                                boolean hasAnklets, boolean ankletsLocked,
+                                boolean brainwashed,
+                                boolean exoDarknessEnabled, boolean gogglesVisionEnabled,
+                                String currentTask) {
             this.targetUUID = targetUUID;
             this.targetName = targetName;
             this.posX = posX; this.posY = posY; this.posZ = posZ;
@@ -526,6 +619,8 @@ public class ControlPanelPackets {
             this.hasAnklets = hasAnklets;
             this.ankletsLocked = ankletsLocked;
             this.brainwashed = brainwashed;
+            this.exoDarknessEnabled = exoDarknessEnabled;
+            this.gogglesVisionEnabled = gogglesVisionEnabled;
             this.currentTask = currentTask;
         }
 
@@ -544,6 +639,8 @@ public class ControlPanelPackets {
             hasAnklets = buf.readBoolean();
             ankletsLocked = buf.readBoolean();
             brainwashed = buf.readBoolean();
+            exoDarknessEnabled = buf.readBoolean();
+            gogglesVisionEnabled = buf.readBoolean();
             currentTask = buf.readUtf(512);
         }
 
@@ -562,6 +659,8 @@ public class ControlPanelPackets {
             buf.writeBoolean(hasAnklets);
             buf.writeBoolean(ankletsLocked);
             buf.writeBoolean(brainwashed);
+            buf.writeBoolean(exoDarknessEnabled);
+            buf.writeBoolean(gogglesVisionEnabled);
             buf.writeUtf(currentTask, 512);
         }
 
@@ -592,6 +691,8 @@ public class ControlPanelPackets {
         public boolean hasAnklets()        { return hasAnklets; }
         public boolean isAnkletsLocked()   { return ankletsLocked; }
         public boolean isBrainwashed()     { return brainwashed; }
+        public boolean isExoDarknessEnabled() { return exoDarknessEnabled; }
+        public boolean isGogglesVisionEnabled() { return gogglesVisionEnabled; }
         public String getCurrentTask()     { return currentTask; }
     }
 
@@ -660,6 +761,8 @@ public class ControlPanelPackets {
         boolean handcuffsLocked = RestraintManager.isHandcuffsLocked(targetUUID);
         boolean ankletsLocked = RestraintManager.isAnkletsLocked(targetUUID);
         boolean brainwashed = BrainwashManager.isActive(targetUUID);
+        boolean exoDarknessEnabled = TargetManager.isExoDarknessEnabled(targetUUID);
+        boolean gogglesVisionEnabled = TargetManager.isGogglesVisionEnabled(targetUUID);
 
         TaskData task = TargetManager.getTask(targetUUID);
         String taskText = task != null ? task.getDisplayText() : "";
@@ -673,7 +776,16 @@ public class ControlPanelPackets {
                         hasHandcuffs, handcuffsLocked,
                         hasAnklets, ankletsLocked,
                         brainwashed,
+                        exoDarknessEnabled, gogglesVisionEnabled,
                         taskText)
+        );
+    }
+
+    private static void sendVisionStateToTarget(ServerPlayer target) {
+        boolean gogglesVisionEnabled = TargetManager.isGogglesVisionEnabled(target.getUUID());
+        NetworkHandler.CHANNEL.send(
+                PacketDistributor.PLAYER.with(() -> target),
+                new S2CVisionControl(gogglesVisionEnabled)
         );
     }
 

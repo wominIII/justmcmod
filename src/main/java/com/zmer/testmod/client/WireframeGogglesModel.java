@@ -80,7 +80,38 @@ public class WireframeGogglesModel extends HumanoidModel<LivingEntity> {
         head.addOrReplaceChild("cube_r1",
                 CubeListBuilder.create()
                         .texOffs(0, 19).addBox(0.0F, 0.0F, -4.0F, 1.0F, 2.0F, 8.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(0.0F, -1.0F, 5.0F, 0.0F, 1.5708F, 0.0F));
+                PartPose.offsetAndRotation(0.0F, -2.0F, 5.0F, 0.0F, 1.5708F, 0.0F));
+
+        // Rear-upward receiver antennas (no side extension).
+        head.addOrReplaceChild("left_rear_receiver_base",
+                CubeListBuilder.create()
+                        .texOffs(0, 19).addBox(-0.8F, -0.8F, -0.8F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+                PartPose.offset(-1.9F, -2.4F, 3.7F));
+
+        head.addOrReplaceChild("right_rear_receiver_base",
+                CubeListBuilder.create()
+                        .texOffs(0, 19).addBox(-1.2F, -0.8F, -0.8F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+                PartPose.offset(1.9F, -2.4F, 3.7F));
+
+        head.addOrReplaceChild("left_rear_receiver_wire",
+                CubeListBuilder.create()
+                        .texOffs(0, 16).addBox(-0.4F, -4.0F, -0.4F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)),
+                PartPose.offsetAndRotation(-1.9F, -2.2F, 3.8F, -0.55F, 0.18F, -0.06F));
+
+        head.addOrReplaceChild("right_rear_receiver_wire",
+                CubeListBuilder.create()
+                        .texOffs(0, 16).addBox(-0.6F, -4.0F, -0.4F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)),
+                PartPose.offsetAndRotation(1.9F, -2.2F, 3.8F, -0.55F, -0.18F, 0.06F));
+
+        head.addOrReplaceChild("left_rear_receiver_tip",
+                CubeListBuilder.create()
+                        .texOffs(0, 16).addBox(-0.9F, -1.0F, -0.9F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+                PartPose.offset(-2.4F, -5.2F, 5.2F));
+
+        head.addOrReplaceChild("right_rear_receiver_tip",
+                CubeListBuilder.create()
+                        .texOffs(0, 16).addBox(-1.1F, -1.0F, -0.9F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+                PartPose.offset(2.4F, -5.2F, 5.2F));
 
         // ── Empty parts required by HumanoidModel ───────────────
         root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);

@@ -4,7 +4,8 @@
   "package": "com.zmer.testmod.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ClientPlayerSkinMixin"
+    "ClientPlayerSkinMixin",
+    "PlayerArmOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1

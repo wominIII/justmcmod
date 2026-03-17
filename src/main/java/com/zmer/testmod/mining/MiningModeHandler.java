@@ -2,7 +2,6 @@ package com.zmer.testmod.mining;
 
 import com.zmer.testmod.ExampleMod;
 import com.zmer.testmod.item.MechanicalGlovesItem;
-import com.zmer.testmod.item.RemoteControlItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -35,6 +34,8 @@ import net.minecraftforge.fml.common.Mod;
  */
 @Mod.EventBusSubscriber(modid = ExampleMod.MODID)
 public class MiningModeHandler {
+    /** Distance threshold to consider "returned to master" (blocks). */
+    private static final double RETURN_DISTANCE = 5.0;
 
     /** Check if a block is an ore block. */
     public static boolean isOreBlock(BlockState state) {
@@ -219,7 +220,7 @@ public class MiningModeHandler {
                 ServerPlayer master = level.getServer().getPlayerList().getPlayer(masterUUID);
                 if (master != null && master.level() == sp.level()) {
                     double dist = sp.distanceTo(master);
-                    if (dist <= RemoteControlItem.RETURN_DISTANCE) {
+                    if (dist <= RETURN_DISTANCE) {
                         // Returned successfully!
                         MechanicalGlovesItem.clearRecallDeadline(gloves);
                         sp.displayClientMessage(

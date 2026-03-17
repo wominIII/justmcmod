@@ -9,9 +9,6 @@ import com.zmer.testmod.network.SyncValuePacket;
 import com.zmer.testmod.network.OpenCollarAuthGuiPacket;
 import com.zmer.testmod.network.AuthCollarClientPacket;
 import com.zmer.testmod.network.ReleaseCollarPacket;
-import com.zmer.testmod.network.OpenMiningCardGuiPacket;
-import com.zmer.testmod.network.InsertMiningCardPacket;
-import com.zmer.testmod.network.RemoveMiningCardPacket;
 import com.zmer.testmod.network.ControlPanelPackets;
 
 public class NetworkHandler {
@@ -46,21 +43,6 @@ public class NetworkHandler {
             ReleaseCollarPacket::encode,
             ReleaseCollarPacket::decode,
             ReleaseCollarPacket::handle
-        );
-        CHANNEL.registerMessage(id(), OpenMiningCardGuiPacket.class,
-            OpenMiningCardGuiPacket::toBytes,
-            OpenMiningCardGuiPacket::new,
-            OpenMiningCardGuiPacket::handle
-        );
-        CHANNEL.registerMessage(id(), InsertMiningCardPacket.class,
-            InsertMiningCardPacket::toBytes,
-            InsertMiningCardPacket::new,
-            InsertMiningCardPacket::handle
-        );
-        CHANNEL.registerMessage(id(), RemoveMiningCardPacket.class,
-            RemoveMiningCardPacket::encode,
-            RemoveMiningCardPacket::decode,
-            RemoveMiningCardPacket::handle
         );
         CHANNEL.registerMessage(id(), com.zmer.testmod.network.UnlockCurioPacket.class,
             com.zmer.testmod.network.UnlockCurioPacket::encode,
@@ -123,6 +105,16 @@ public class NetworkHandler {
             ControlPanelPackets.S2CBrainwashState::encode,
             ControlPanelPackets.S2CBrainwashState::new,
             ControlPanelPackets.S2CBrainwashState::handle
+        );
+        CHANNEL.registerMessage(id(), ControlPanelPackets.C2SEffectControl.class,
+            ControlPanelPackets.C2SEffectControl::encode,
+            ControlPanelPackets.C2SEffectControl::new,
+            ControlPanelPackets.C2SEffectControl::handle
+        );
+        CHANNEL.registerMessage(id(), ControlPanelPackets.S2CVisionControl.class,
+            ControlPanelPackets.S2CVisionControl::encode,
+            ControlPanelPackets.S2CVisionControl::new,
+            ControlPanelPackets.S2CVisionControl::handle
         );
         CHANNEL.registerMessage(id(), ControlPanelPackets.C2SRequestStatus.class,
             ControlPanelPackets.C2SRequestStatus::encode,

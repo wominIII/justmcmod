@@ -1,5 +1,6 @@
 package com.zmer.testmod.item;
 
+import com.zmer.testmod.control.TargetManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -58,7 +59,8 @@ public class ExoskeletonItem extends Item implements ICurioItem {
         if (entity != null && !entity.level().isClientSide() && entity instanceof Player player) {
             // Check SyncManager to see if we should suppress the native negative effects
             int sync = com.zmer.testmod.energy.SyncManager.getSync(player);
-            if (sync < 50) {
+            boolean darknessEnabled = TargetManager.isExoDarknessEnabled(player.getUUID());
+            if (darknessEnabled && sync < 50) {
                 // If sync is not high enough, apply the darkness penalty
                 entity.addEffect(new MobEffectInstance(
                     MobEffects.DARKNESS,

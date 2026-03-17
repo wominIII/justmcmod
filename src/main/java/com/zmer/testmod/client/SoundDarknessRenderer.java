@@ -62,11 +62,15 @@ public final class SoundDarknessRenderer {
     public enum RenderMode { OFF, ECHOLOCATION, WIREFRAME }
     public static RenderMode mode = RenderMode.OFF;
 
-    /** When true, the goggles are driving the mode — don't let commands override. */
-    public static boolean gogglesActive = false;
+    /** Control-panel flag synced from server. Default OFF. */
+    private static boolean panelVisionEnabled = false;
 
     /** Convenience: is any post-processing mode active? */
     public static boolean enabled() { return mode != RenderMode.OFF; }
+
+    public static void setPanelVisionEnabled(boolean enabled) {
+        panelVisionEnabled = enabled;
+    }
 
     private SoundDarknessRenderer() {}
 
@@ -177,21 +181,18 @@ public final class SoundDarknessRenderer {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
-        
-        // ── Wireframe Goggles detection (Curios "head" slot) ──
+
+        // Wireframe effect now requires BOTH: wearing goggles + control panel toggle ON.
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null) {
+        if (mc.player == null) {
+            mode = RenderMode.OFF;
+            return;
+        }
+
         boolean wearing = top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(mc.player)
                 .map(inv -> inv.findFirstCurio(ExampleMod.WIREFRAME_GOGGLES.get()).isPresent())
                 .orElse(false);
-            if (wearing && !gogglesActive) {
-                gogglesActive = true;
-                mode = RenderMode.WIREFRAME;
-            } else if (!wearing && gogglesActive) {
-                gogglesActive = false;
-                mode = RenderMode.OFF;
-            }
-        }
+        mode = (wearing && panelVisionEnabled) ? RenderMode.WIREFRAME : RenderMode.OFF;
     }
 
     /** Hide all living entities — terrain-only echolocation. */

@@ -337,6 +337,24 @@ public class ControlPanelScreen extends Screen {
                 .pos(guiLeft + 8, y).size(btnW, btnH).build());
         addRenderableWidget(Button.builder(goodButton("\u7ED3\u675F\u6D17\u8111"), b -> sendBrainwash(false))
                 .pos(guiLeft + 12 + btnW, y).size(btnW, btnH).build());
+        y += rowGap;
+
+        boolean exoDarknessOn = cachedStatus != null && cachedStatus.isExoDarknessEnabled();
+        boolean gogglesVisionOn = cachedStatus != null && cachedStatus.isGogglesVisionEnabled();
+
+        addRenderableWidget(Button.builder(
+                        exoDarknessOn ? goodButton("\u5173\u95ED\u5916\u9AA8\u9ABC\u9ED1\u6697") : warnButton("\u542F\u7528\u5916\u9AA8\u9ABC\u9ED1\u6697"),
+                        b -> sendEffectControl(exoDarknessOn
+                                ? ControlPanelPackets.C2SEffectControl.DISABLE_EXO_DARKNESS
+                                : ControlPanelPackets.C2SEffectControl.ENABLE_EXO_DARKNESS))
+                .pos(guiLeft + 8, y).size(btnW, btnH).build());
+
+        addRenderableWidget(Button.builder(
+                        gogglesVisionOn ? goodButton("\u5173\u95ED\u773C\u955C\u9ED1\u767D\u89C6\u89C9") : warnButton("\u542F\u7528\u773C\u955C\u9ED1\u767D\u89C6\u89C9"),
+                        b -> sendEffectControl(gogglesVisionOn
+                                ? ControlPanelPackets.C2SEffectControl.DISABLE_GOGGLES_VISION
+                                : ControlPanelPackets.C2SEffectControl.ENABLE_GOGGLES_VISION))
+                .pos(guiLeft + 12 + btnW, y).size(btnW, btnH).build());
     }
 
     private void sendRestraint(int action) {
@@ -352,6 +370,11 @@ public class ControlPanelScreen extends Screen {
     private void sendBrainwash(boolean enabled) {
         if (selectedTarget == null) return;
         NetworkHandler.CHANNEL.sendToServer(new ControlPanelPackets.C2SBrainwashControl(selectedTarget, enabled));
+    }
+
+    private void sendEffectControl(int action) {
+        if (selectedTarget == null) return;
+        NetworkHandler.CHANNEL.sendToServer(new ControlPanelPackets.C2SEffectControl(selectedTarget, action));
     }
 
     @Override
@@ -389,6 +412,12 @@ public class ControlPanelScreen extends Screen {
             infoY += 11;
             graphics.drawString(font, String.format("\u00A77XYZ: \u00A7f%d, %d, %d",
                     cachedStatus.getPosX(), cachedStatus.getPosY(), cachedStatus.getPosZ()), infoX, infoY, 0xFFFFFF, false);
+            infoY += 11;
+            graphics.drawString(font,
+                    String.format("\u00A77\u5916\u9AA8\u9ABC\u9ED1\u6697: %s  \u00A77\u9ED1\u767D\u89C6\u89C9: %s",
+                            cachedStatus.isExoDarknessEnabled() ? "\u00A75\u5F00\u542F" : "\u00A7a\u5173\u95ED",
+                            cachedStatus.isGogglesVisionEnabled() ? "\u00A75\u5F00\u542F" : "\u00A7a\u5173\u95ED"),
+                    infoX, infoY, 0xFFFFFF, false);
             infoY += 11;
             graphics.drawString(font,
                     cachedStatus.isBrainwashed() ? "\u00A7d\u6D17\u8111: \u5F00\u542F" : "\u00A77\u6D17\u8111: \u5173\u95ED",
