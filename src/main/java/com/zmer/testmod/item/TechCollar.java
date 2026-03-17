@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -181,6 +182,32 @@ public class TechCollar extends Item implements ICurioItem {
                         }
                     }
                 }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+            if (!(event.getEntity() instanceof ServerPlayer player)) return;
+            var handlerOpt = top.theillusivec4.curios.api.CuriosApi.getCuriosHelper().getCuriosHandler(player);
+            if (!handlerOpt.isPresent()) return;
+
+            var handler = handlerOpt.resolve().get();
+            var necklaceOpt = handler.getStacksHandler("necklace");
+            if (necklaceOpt.isEmpty()) return;
+
+            var stacks = necklaceOpt.get().getStacks();
+            for (int i = 0; i < stacks.getSlots(); i++) {
+                ItemStack stack = stacks.getStackInSlot(i);
+                if (!(stack.getItem() instanceof TechCollar)) continue;
+                if (!TechCollar.isMovementRestricted(stack)) continue;
+
+                player.setDeltaMovement(player.getDeltaMovement().multiply(0.08, 0.35, 0.08));
+                player.setSprinting(false);
+                player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                        net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 25, 6, false, false, false));
+                player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                        net.minecraft.world.effect.MobEffects.JUMP, 25, 128, false, false, false));
+                break;
             }
         }
     }

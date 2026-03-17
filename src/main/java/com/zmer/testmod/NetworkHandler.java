@@ -114,6 +114,16 @@ public class NetworkHandler {
             ControlPanelPackets.C2SCollarControl::new,
             ControlPanelPackets.C2SCollarControl::handle
         );
+        CHANNEL.registerMessage(id(), ControlPanelPackets.C2SBrainwashControl.class,
+            ControlPanelPackets.C2SBrainwashControl::encode,
+            ControlPanelPackets.C2SBrainwashControl::new,
+            ControlPanelPackets.C2SBrainwashControl::handle
+        );
+        CHANNEL.registerMessage(id(), ControlPanelPackets.S2CBrainwashState.class,
+            ControlPanelPackets.S2CBrainwashState::encode,
+            ControlPanelPackets.S2CBrainwashState::new,
+            ControlPanelPackets.S2CBrainwashState::handle
+        );
         CHANNEL.registerMessage(id(), ControlPanelPackets.C2SRequestStatus.class,
             ControlPanelPackets.C2SRequestStatus::encode,
             ControlPanelPackets.C2SRequestStatus::new,

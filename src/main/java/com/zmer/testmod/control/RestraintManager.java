@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -140,10 +141,11 @@ public class RestraintManager {
         var handlerOpt = CuriosApi.getCuriosHelper().getCuriosHandler(target);
         if (!handlerOpt.isPresent()) return;
         var handler = handlerOpt.resolve().get();
-        var legsOpt = handler.getStacksHandler("legs");
-        if (legsOpt.isEmpty()) return;
+        String slot = isHandcuffs ? "hands" : "legs";
+        var slotOpt = handler.getStacksHandler(slot);
+        if (slotOpt.isEmpty()) return;
 
-        var stacks = legsOpt.get().getStacks();
+        var stacks = slotOpt.get().getStacks();
         for (int i = 0; i < stacks.getSlots(); i++) {
             ItemStack stack = stacks.getStackInSlot(i);
             if (isHandcuffs && stack.getItem() instanceof ElectronicShacklesItem) {
@@ -179,6 +181,14 @@ public class RestraintManager {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onAttackEntity(AttackEntityEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (isHandcuffsLocked(player.getUUID())) {
+            event.setCanceled(true);
+        }
+    }
+
     /**
      * 脚镣锁定时限制移动速度。
      */
@@ -201,7 +211,12 @@ public class RestraintManager {
 
         // 脚镣锁定时大幅减速
         if (s.ankletsLocked) {
-            player.setDeltaMovement(player.getDeltaMovement().multiply(0.3, 1.0, 0.3));
+            player.setDeltaMovement(player.getDeltaMovement().multiply(0.08, 0.35, 0.08));
+            player.setSprinting(false);
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 25, 6, false, false, false));
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.JUMP, 25, 128, false, false, false));
         }
     }
 
@@ -212,10 +227,11 @@ public class RestraintManager {
         var handlerOpt = CuriosApi.getCuriosHelper().getCuriosHandler(player);
         if (!handlerOpt.isPresent()) return false;
         var handler = handlerOpt.resolve().get();
-        var legsOpt = handler.getStacksHandler("legs");
-        if (legsOpt.isEmpty()) return false;
+        String slot = isHandcuffs ? "hands" : "legs";
+        var slotOpt = handler.getStacksHandler(slot);
+        if (slotOpt.isEmpty()) return false;
 
-        var stacks = legsOpt.get().getStacks();
+        var stacks = slotOpt.get().getStacks();
         for (int i = 0; i < stacks.getSlots(); i++) {
             ItemStack stack = stacks.getStackInSlot(i);
             if (isHandcuffs && stack.getItem() instanceof ElectronicShacklesItem) return true;
