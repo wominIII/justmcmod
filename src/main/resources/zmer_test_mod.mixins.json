@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.zmer.testmod.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ClientPlayerSkinMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

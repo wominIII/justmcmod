@@ -1,0 +1,8 @@
+{
+    "parent": "minecraft:block/cube_column",
+    "textures": {
+        "end": "zmer_test_mod:block/exo_assimilator_top",
+        "side": "zmer_test_mod:block/exo_assimilator_side"
+    },
+    "render_type": "translucent"
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "zmer_test_mod:block/charging_station_off",
+  "textures": {
+    "top": "zmer_test_mod:block/charging_station_top_on"
+  }
+}

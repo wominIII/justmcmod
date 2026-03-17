@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "zmer_test_mod:block/path_block" }
+  }
+}

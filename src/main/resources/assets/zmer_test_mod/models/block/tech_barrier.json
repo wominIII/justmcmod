@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "zmer_test_mod:block/tech_barrier"
+  }
+}

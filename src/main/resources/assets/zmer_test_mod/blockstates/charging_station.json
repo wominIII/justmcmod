@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "charging=false,facing=north": { "model": "zmer_test_mod:block/charging_station_off" },
+    "charging=false,facing=south": { "model": "zmer_test_mod:block/charging_station_off", "y": 180 },
+    "charging=false,facing=west":  { "model": "zmer_test_mod:block/charging_station_off", "y": 270 },
+    "charging=false,facing=east":  { "model": "zmer_test_mod:block/charging_station_off", "y": 90 },
+    "charging=true,facing=north":  { "model": "zmer_test_mod:block/charging_station_on" },
+    "charging=true,facing=south":  { "model": "zmer_test_mod:block/charging_station_on", "y": 180 },
+    "charging=true,facing=west":   { "model": "zmer_test_mod:block/charging_station_on", "y": 270 },
+    "charging=true,facing=east":   { "model": "zmer_test_mod:block/charging_station_on", "y": 90 }
+  }
+}

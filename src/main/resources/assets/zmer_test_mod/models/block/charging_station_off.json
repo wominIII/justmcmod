@@ -1,0 +1,84 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "base": "zmer_test_mod:block/charging_station_base",
+    "top": "zmer_test_mod:block/charging_station_top_off",
+    "side": "zmer_test_mod:block/charging_station_side",
+    "particle": "zmer_test_mod:block/charging_station_side"
+  },
+  "elements": [
+    {
+      "name": "base_platform",
+      "from": [0, 0, 0],
+      "to": [16, 8, 16],
+      "faces": {
+        "up":    { "texture": "#top", "uv": [0, 0, 16, 16] },
+        "down":  { "texture": "#base", "uv": [0, 0, 16, 16], "cullface": "down" },
+        "north": { "texture": "#side", "uv": [0, 8, 16, 16], "cullface": "north" },
+        "south": { "texture": "#side", "uv": [0, 8, 16, 16], "cullface": "south" },
+        "east":  { "texture": "#side", "uv": [0, 8, 16, 16], "cullface": "east" },
+        "west":  { "texture": "#side", "uv": [0, 8, 16, 16], "cullface": "west" }
+      }
+    },
+    {
+      "name": "center_pillar",
+      "from": [4, 8, 4],
+      "to": [12, 12, 12],
+      "faces": {
+        "up":    { "texture": "#top", "uv": [4, 4, 12, 12] },
+        "north": { "texture": "#side", "uv": [4, 4, 12, 8] },
+        "south": { "texture": "#side", "uv": [4, 4, 12, 8] },
+        "east":  { "texture": "#side", "uv": [4, 4, 12, 8] },
+        "west":  { "texture": "#side", "uv": [4, 4, 12, 8] }
+      }
+    },
+    {
+      "name": "post_nw",
+      "from": [1, 8, 1],
+      "to": [4, 10, 4],
+      "faces": {
+        "up":    { "texture": "#top", "uv": [1, 1, 4, 4] },
+        "north": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "south": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "east":  { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "west":  { "texture": "#side", "uv": [1, 6, 4, 8] }
+      }
+    },
+    {
+      "name": "post_ne",
+      "from": [12, 8, 1],
+      "to": [15, 10, 4],
+      "faces": {
+        "up":    { "texture": "#top", "uv": [12, 1, 15, 4] },
+        "north": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "south": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "east":  { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "west":  { "texture": "#side", "uv": [1, 6, 4, 8] }
+      }
+    },
+    {
+      "name": "post_sw",
+      "from": [1, 8, 12],
+      "to": [4, 10, 15],
+      "faces": {
+        "up":    { "texture": "#top", "uv": [1, 12, 4, 15] },
+        "north": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "south": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "east":  { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "west":  { "texture": "#side", "uv": [1, 6, 4, 8] }
+      }
+    },
+    {
+      "name": "post_se",
+      "from": [12, 8, 12],
+      "to": [15, 10, 15],
+      "faces": {
+        "up":    { "texture": "#top", "uv": [12, 12, 15, 15] },
+        "north": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "south": { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "east":  { "texture": "#side", "uv": [1, 6, 4, 8] },
+        "west":  { "texture": "#side", "uv": [1, 6, 4, 8] }
+      }
+    }
+  ]
+}
