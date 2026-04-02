@@ -19,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
  * Uses translucent rendering so the pink visor is see-through.
  */
 public class WireframeGogglesModel extends HumanoidModel<LivingEntity> {
+    private static final float GOGGLES_FORWARD_OFFSET = -0.75F;
 
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(ExampleMod.MODID, "textures/models/armor/wireframe_goggles.png");
@@ -75,7 +76,8 @@ public class WireframeGogglesModel extends HumanoidModel<LivingEntity> {
                         .texOffs(0, 16).addBox(-4.0F, -3.0F, -5.0F, 8.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
                         .texOffs(0, 19).addBox(-5.0F, -3.0F, -4.0F, 1.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
                         .texOffs(0, 19).addBox(4.0F, -3.0F, -4.0F, 1.0F, 2.0F, 8.0F, new CubeDeformation(0.0F)),
-                PartPose.offset(0.0F, 0.0F, 0.0F));
+                // Pull the visor slightly away from the face so skin overlays do not clip through it.
+                PartPose.offset(0.0F, 0.0F, GOGGLES_FORWARD_OFFSET));
 
         head.addOrReplaceChild("cube_r1",
                 CubeListBuilder.create()

@@ -44,8 +44,7 @@ public class WireframeGogglesRenderer implements ICurioRenderer {
 
         LivingEntity entity = slotContext.entity();
 
-        ICurioRenderer.followBodyRotations(entity, this.model);
-        ICurioRenderer.followHeadRotations(entity, this.model.head);
+        ClientUtils.syncHumanoidModel(entity, renderLayerParent.getModel(), this.model);
 
         float yOffset = 0f;
         if (entity instanceof Player player) {

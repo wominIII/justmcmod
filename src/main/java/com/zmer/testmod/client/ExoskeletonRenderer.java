@@ -45,7 +45,7 @@ public class ExoskeletonRenderer implements ICurioRenderer {
             float partialTicks, float ageInTicks,
             float netHeadYaw, float headPitch) {
 
-        ICurioRenderer.followBodyRotations(slotContext.entity(), this.model);
+        ClientUtils.syncHumanoidModel(slotContext.entity(), renderLayerParent.getModel(), this.model);
         VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
                 RenderType.entityTranslucent(TEXTURE));
         this.model.renderToBuffer(matrixStack, vertexConsumer, light,

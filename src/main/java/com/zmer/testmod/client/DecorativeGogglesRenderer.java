@@ -46,8 +46,7 @@ public class DecorativeGogglesRenderer implements ICurioRenderer {
 
         LivingEntity entity = slotContext.entity();
 
-        ICurioRenderer.followBodyRotations(entity, this.model);
-        ICurioRenderer.followHeadRotations(entity, this.model.head);
+        ClientUtils.syncHumanoidModel(entity, renderLayerParent.getModel(), this.model);
 
         VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
                 RenderType.entityTranslucent(TEXTURE));

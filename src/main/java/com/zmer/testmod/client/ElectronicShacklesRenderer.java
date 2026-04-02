@@ -45,18 +45,7 @@ public class ElectronicShacklesRenderer implements ICurioRenderer {
             float partialTicks, float ageInTicks,
             float netHeadYaw, float headPitch) {
 
-        M parentModel = renderLayerParent.getModel();
-        if (parentModel instanceof HumanoidModel<?> humanoidModel) {
-            this.model.rightArm.copyFrom(humanoidModel.rightArm);
-            this.model.leftArm.copyFrom(humanoidModel.leftArm);
-            this.model.rightLeg.copyFrom(humanoidModel.rightLeg);
-            this.model.leftLeg.copyFrom(humanoidModel.leftLeg);
-            this.model.body.copyFrom(humanoidModel.body);
-            this.model.head.copyFrom(humanoidModel.head);
-            this.model.hat.copyFrom(humanoidModel.hat);
-        } else {
-            ICurioRenderer.followBodyRotations(slotContext.entity(), this.model);
-        }
+        ClientUtils.syncHumanoidModel(slotContext.entity(), renderLayerParent.getModel(), this.model);
 
         VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
                 RenderType.entityTranslucent(TEXTURE));

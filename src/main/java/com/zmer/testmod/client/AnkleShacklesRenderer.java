@@ -41,18 +41,7 @@ public class AnkleShacklesRenderer implements ICurioRenderer {
             float partialTicks, float ageInTicks,
             float netHeadYaw, float headPitch) {
 
-        M parentModel = renderLayerParent.getModel();
-        if (parentModel instanceof HumanoidModel<?> humanoidModel) {
-            this.model.rightLeg.copyFrom(humanoidModel.rightLeg);
-            this.model.leftLeg.copyFrom(humanoidModel.leftLeg);
-            this.model.body.copyFrom(humanoidModel.body);
-            this.model.head.copyFrom(humanoidModel.head);
-            this.model.hat.copyFrom(humanoidModel.hat);
-        } else {
-            ICurioRenderer.followBodyRotations(slotContext.entity(), this.model);
-        }
-
-        ICurioRenderer.translateIfSneaking(matrixStack, slotContext.entity());
+        ClientUtils.syncHumanoidModel(slotContext.entity(), renderLayerParent.getModel(), this.model);
 
         VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
                 RenderType.entityTranslucent(TEXTURE));

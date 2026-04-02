@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
  * Decorative goggles model — 2 pixels higher than WireframeGoggles.
  */
 public class DecorativeGogglesModel extends HumanoidModel<LivingEntity> {
+    private static final float GOGGLES_FORWARD_OFFSET = -0.75F;
 
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(ExampleMod.MODID, "textures/models/armor/wireframe_goggles.png");
@@ -63,7 +64,8 @@ public class DecorativeGogglesModel extends HumanoidModel<LivingEntity> {
                         .texOffs(0, 16).addBox(-4.0F, -5.0F, -5.0F, 8.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
                         .texOffs(0, 19).addBox(-5.0F, -5.0F, -4.0F, 1.0F, 2.0F, 8.0F, new CubeDeformation(0.0F))
                         .texOffs(0, 19).addBox(4.0F, -5.0F, -4.0F, 1.0F, 2.0F, 8.0F, new CubeDeformation(0.0F)),
-                PartPose.offset(0.0F, 0.0F, 0.0F));
+                // Match the regular goggles so the visor clears the player's outer skin layer.
+                PartPose.offset(0.0F, 0.0F, GOGGLES_FORWARD_OFFSET));
 
         head.addOrReplaceChild("cube_r1",
                 CubeListBuilder.create()
