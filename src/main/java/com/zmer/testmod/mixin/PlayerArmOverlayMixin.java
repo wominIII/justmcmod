@@ -17,7 +17,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 @Mixin(PlayerRenderer.class)
 public class PlayerArmOverlayMixin {
 
-    @Inject(method = "renderRightHand", at = @At("TAIL"))
+    @Inject(method = "renderRightHand", at = @At("TAIL"), require = 0)
     private void zmer$renderRightArmOverlay(PoseStack poseStack, MultiBufferSource buffer,
                                             int packedLight, AbstractClientPlayer player, CallbackInfo ci) {
         if (!zmer$shouldRenderArmOverlay(player)) return;
@@ -34,7 +34,7 @@ public class PlayerArmOverlayMixin {
         model.rightSleeve.render(poseStack, vc, packedLight, OverlayTexture.NO_OVERLAY, red, green, blue, alpha);
     }
 
-    @Inject(method = "renderLeftHand", at = @At("TAIL"))
+    @Inject(method = "renderLeftHand", at = @At("TAIL"), require = 0)
     private void zmer$renderLeftArmOverlay(PoseStack poseStack, MultiBufferSource buffer,
                                            int packedLight, AbstractClientPlayer player, CallbackInfo ci) {
         if (!zmer$shouldRenderArmOverlay(player)) return;
@@ -58,4 +58,3 @@ public class PlayerArmOverlayMixin {
         ).orElse(false);
     }
 }
-

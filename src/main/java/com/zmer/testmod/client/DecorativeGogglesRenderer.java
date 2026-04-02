@@ -1,35 +1,23 @@
 package com.zmer.testmod.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.zmer.testmod.ExampleMod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
-
-/**
- * Renderer for Decorative Goggles — 2 pixels higher than wireframe goggles.
- */
 public class DecorativeGogglesRenderer implements ICurioRenderer {
-
-    private static final ResourceLocation TEXTURE =
-            new ResourceLocation(ExampleMod.MODID, "textures/models/armor/wireframe_goggles.png");
-
-    private final HumanoidModel<LivingEntity> model;
+    private final GeoArmorRenderer<com.zmer.testmod.item.DecorativeGoggles> renderer;
 
     public DecorativeGogglesRenderer() {
-        this.model = new HumanoidModel<>(
-                Minecraft.getInstance().getEntityModels()
-                        .bakeLayer(DecorativeGogglesModel.LAYER_LOCATION));
+        this.renderer = new DecorativeGogglesGeoArmorRenderer();
     }
 
     @Override
@@ -43,14 +31,31 @@ public class DecorativeGogglesRenderer implements ICurioRenderer {
             float limbSwing, float limbSwingAmount,
             float partialTicks, float ageInTicks,
             float netHeadYaw, float headPitch) {
+        if (!(stack.getItem() instanceof com.zmer.testmod.item.DecorativeGoggles gogglesItem)) {
+            return;
+        }
 
-        LivingEntity entity = slotContext.entity();
+        if (!(renderLayerParent.getModel() instanceof HumanoidModel<?> humanoidModel)) {
+            return;
+        }
 
-        ClientUtils.syncHumanoidModel(entity, renderLayerParent.getModel(), this.model);
+        this.renderer.prepForRender(slotContext.entity(), stack, EquipmentSlot.HEAD, humanoidModel);
 
-        VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
-                RenderType.entityTranslucent(TEXTURE));
-        this.model.renderToBuffer(matrixStack, vertexConsumer, light,
+        matrixStack.pushPose();
+        float yOffset = slotContext.entity() instanceof Player player
+                ? GogglesOffsetHandler.getOffset(player)
+                : 0.0F;
+        if (yOffset != 0.0F) {
+            matrixStack.translate(0.0D, yOffset / 16.0D, 0.0D);
+        }
+        com.mojang.blaze3d.vertex.VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
+                this.renderer.getRenderType(
+                        gogglesItem,
+                        this.renderer.getGeoModel().getTextureResource(gogglesItem),
+                        renderTypeBuffer,
+                        partialTicks));
+        this.renderer.renderToBuffer(matrixStack, vertexConsumer, light,
                 OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStack.popPose();
     }
 }

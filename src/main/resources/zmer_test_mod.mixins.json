@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.zmer.testmod.mixin",
+  "refmap": "zmer_test_mod.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "ClientPlayerSkinMixin",

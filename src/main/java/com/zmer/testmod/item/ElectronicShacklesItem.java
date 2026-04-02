@@ -6,6 +6,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -23,13 +27,24 @@ import java.util.UUID;
  * Requires QTE to remove.
  * Can be server-locked by Control Panel to completely restrict player actions.
  */
-public class ElectronicShacklesItem extends Item implements ICurioItem {
+public class ElectronicShacklesItem extends Item implements ICurioItem, GeoItem {
 
     private static long lastQteOpenTime = 0;
     private static final long QTE_COOLDOWN_MS = 500;
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public ElectronicShacklesItem(Properties props) {
         super(props);
+        GeoItem.registerSyncedAnimatable(this);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 
     public static boolean isServerLocked(ItemStack stack) {

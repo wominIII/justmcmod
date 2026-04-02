@@ -8,6 +8,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -20,7 +24,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
  * 2. Restriction system: spine-mounted needle injectors
  *    continuously apply Blindness while worn.
  */
-public class ExoskeletonItem extends Item implements ICurioItem {
+public class ExoskeletonItem extends Item implements ICurioItem, GeoItem {
 
     /** When true, the next unequip attempt will succeed. */
     private static boolean removalUnlocked = false;
@@ -28,9 +32,20 @@ public class ExoskeletonItem extends Item implements ICurioItem {
     /** Cooldown to prevent QTE from opening repeatedly. */
     private static long lastQteOpenTime = 0;
     private static final long QTE_COOLDOWN_MS = 500;
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public ExoskeletonItem(Properties props) {
         super(props);
+        GeoItem.registerSyncedAnimatable(this);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 
     /** Called by GogglesQTEScreen when the player completes the exoskeleton QTE. */

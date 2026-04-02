@@ -2,17 +2,15 @@ package com.zmer.testmod.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.zmer.testmod.ExampleMod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 
@@ -21,16 +19,10 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
  * Renders the full skeletal frame on the player.
  */
 public class ExoskeletonRenderer implements ICurioRenderer {
-
-    private static final ResourceLocation TEXTURE =
-            new ResourceLocation(ExampleMod.MODID, "textures/models/armor/exoskeleton.png");
-
-    private final HumanoidModel<LivingEntity> model;
+    private final GeoArmorRenderer<com.zmer.testmod.item.ExoskeletonItem> renderer;
 
     public ExoskeletonRenderer() {
-        this.model = new HumanoidModel<>(
-                Minecraft.getInstance().getEntityModels()
-                        .bakeLayer(ExoskeletonModel.LAYER_LOCATION));
+        this.renderer = new ExoskeletonGeoArmorRenderer();
     }
 
     @Override
@@ -44,11 +36,23 @@ public class ExoskeletonRenderer implements ICurioRenderer {
             float limbSwing, float limbSwingAmount,
             float partialTicks, float ageInTicks,
             float netHeadYaw, float headPitch) {
+        if (!(stack.getItem() instanceof com.zmer.testmod.item.ExoskeletonItem exoskeletonItem)) {
+            return;
+        }
 
-        ClientUtils.syncHumanoidModel(slotContext.entity(), renderLayerParent.getModel(), this.model);
+        if (!(renderLayerParent.getModel() instanceof HumanoidModel<?> humanoidModel)) {
+            return;
+        }
+
+        this.renderer.prepForRender(slotContext.entity(), stack, EquipmentSlot.CHEST, humanoidModel);
+
         VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
-                RenderType.entityTranslucent(TEXTURE));
-        this.model.renderToBuffer(matrixStack, vertexConsumer, light,
+                this.renderer.getRenderType(
+                        exoskeletonItem,
+                        this.renderer.getGeoModel().getTextureResource(exoskeletonItem),
+                        renderTypeBuffer,
+                        partialTicks));
+        this.renderer.renderToBuffer(matrixStack, vertexConsumer, light,
                 OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

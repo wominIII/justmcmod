@@ -13,6 +13,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -25,10 +29,11 @@ import java.util.*;
  * the belt's AI activates and periodically issues random behavioral directives.
  * Failure to comply results in electric shock punishment.
  */
-public class AiBeltItem extends Item implements ICurioItem {
+public class AiBeltItem extends Item implements ICurioItem, GeoItem {
 
     // Per-player state tracking (server-side)
     private static final Map<UUID, AiState> STATES = new HashMap<>();
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private static boolean removalUnlocked = false;
     private static long lastQteOpenTime = 0;
@@ -36,6 +41,16 @@ public class AiBeltItem extends Item implements ICurioItem {
 
     public AiBeltItem(Properties props) {
         super(props);
+        GeoItem.registerSyncedAnimatable(this);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 
     public static void unlockRemoval() { removalUnlocked = true; }

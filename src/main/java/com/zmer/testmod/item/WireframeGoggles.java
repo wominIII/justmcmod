@@ -4,6 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -12,14 +16,25 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
  * Once equipped, nearly impossible to remove (requires completing a pipe-puzzle QTE).
  * Creative mode bypasses the lock.
  */
-public class WireframeGoggles extends Item implements ICurioItem {
+public class WireframeGoggles extends Item implements ICurioItem, GeoItem {
 
     /** Cooldown to prevent QTE from opening repeatedly on rapid canUnequip calls. */
     private static long lastQteOpenTime = 0;
     private static final long QTE_COOLDOWN_MS = 500;
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public WireframeGoggles(Properties props) {
         super(props);
+        GeoItem.registerSyncedAnimatable(this);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 
     @Override

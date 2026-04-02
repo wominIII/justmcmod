@@ -12,6 +12,10 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import com.zmer.testmod.ExampleMod;
@@ -25,14 +29,25 @@ import java.util.UUID;
  * Only the owner can release the collar.
  * Also supports remote control for movement and interaction restrictions.
  */
-public class TechCollar extends Item implements ICurioItem {
+public class TechCollar extends Item implements ICurioItem, GeoItem {
 
     private static boolean removalUnlocked = false;
     private static long lastQteOpenTime = 0;
     private static final long QTE_COOLDOWN_MS = 500;
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public TechCollar(Properties props) {
         super(props);
+        GeoItem.registerSyncedAnimatable(this);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 
     public static void unlockRemoval() {

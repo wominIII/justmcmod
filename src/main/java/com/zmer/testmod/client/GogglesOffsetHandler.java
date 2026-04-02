@@ -63,7 +63,8 @@ public class GogglesOffsetHandler {
 
     private static boolean isWearingGoggles(Player player) {
         return top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player)
-            .map(inv -> inv.findFirstCurio(ExampleMod.WIREFRAME_GOGGLES.get()).isPresent())
+            .map(inv -> inv.findFirstCurio(ExampleMod.WIREFRAME_GOGGLES.get()).isPresent()
+                    || inv.findFirstCurio(ExampleMod.DECORATIVE_GOGGLES.get()).isPresent())
             .orElse(false);
     }
 

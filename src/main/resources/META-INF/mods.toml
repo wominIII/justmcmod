@@ -79,3 +79,10 @@ config="zmer_test_mod.mixins.json"
     versionRange="[5.0,)"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="geckolib"
+    mandatory=true
+    versionRange="[4.8.3,)"
+    ordering="AFTER"
+    side="BOTH"

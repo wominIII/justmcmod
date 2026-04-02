@@ -62,8 +62,8 @@ public final class SoundDarknessRenderer {
     public enum RenderMode { OFF, ECHOLOCATION, WIREFRAME }
     public static RenderMode mode = RenderMode.OFF;
 
-    /** Control-panel flag synced from server. Default OFF. */
-    private static boolean panelVisionEnabled = false;
+    /** Control-panel flag synced from server. Default ON so local goggles behavior still works. */
+    private static boolean panelVisionEnabled = true;
 
     /** Convenience: is any post-processing mode active? */
     public static boolean enabled() { return mode != RenderMode.OFF; }
@@ -186,6 +186,7 @@ public final class SoundDarknessRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) {
             mode = RenderMode.OFF;
+            panelVisionEnabled = true;
             return;
         }
 
