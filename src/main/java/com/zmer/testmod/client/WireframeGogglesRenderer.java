@@ -46,9 +46,7 @@ public class WireframeGogglesRenderer implements ICurioRenderer {
         float yOffset = slotContext.entity() instanceof Player player
                 ? GogglesOffsetHandler.getOffset(player)
                 : 0.0F;
-        if (yOffset != 0.0F) {
-            matrixStack.translate(0.0D, yOffset / 16.0D, 0.0D);
-        }
+        ((WireframeGogglesGeoArmorRenderer) this.renderer).setHeadVerticalOffset(yOffset);
         com.mojang.blaze3d.vertex.VertexConsumer vertexConsumer = renderTypeBuffer.getBuffer(
                 this.renderer.getRenderType(
                         gogglesItem,

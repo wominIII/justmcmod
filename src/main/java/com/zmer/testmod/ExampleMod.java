@@ -230,6 +230,7 @@ public class ExampleMod
             event.enqueueWork(() -> {
                 com.zmer.testmod.client.CuriosRenderers.registerRenderers();
                 com.zmer.testmod.client.GogglesOffsetHandler.init();
+                com.zmer.testmod.client.MechanicalGlovesFirstPersonRenderer.init();
             });
         }
 
