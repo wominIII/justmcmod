@@ -15,7 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
@@ -30,6 +33,8 @@ import java.util.*;
  * Failure to comply results in electric shock punishment.
  */
 public class AiBeltItem extends Item implements ICurioItem, GeoItem {
+    private static final RawAnimation IDLE_ANIMATION =
+            RawAnimation.begin().thenLoop("animation.ai_belt.idle");
 
     // Per-player state tracking (server-side)
     private static final Map<UUID, AiState> STATES = new HashMap<>();
@@ -46,6 +51,10 @@ public class AiBeltItem extends Item implements ICurioItem, GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "main_controller", 0, state -> {
+            state.setAnimation(IDLE_ANIMATION);
+            return PlayState.CONTINUE;
+        }));
     }
 
     @Override
